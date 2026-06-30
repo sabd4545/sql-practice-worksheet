@@ -1,0 +1,337 @@
+ MySQL  localhost:33060+ ssl  SQL > use mydatabase;
+Default schema set to `mydatabase`.
+Fetching global names, object names from `mydatabase` for auto-completion... Press ^C to stop.
+ MySQL  localhost:33060+ ssl  mydatabase  SQL > CREATE TABLE Employees (
+                                             ->     EmpID INT PRIMARY KEY,
+                                             ->     EmpName VARCHAR(50) NOT NULL,
+                                             ->     DeptID INT,
+                                             ->     Salary INT
+                                             -> );
+ERROR: 1050: Table 'employees' already exists
+ MySQL  localhost:33060+ ssl  mydatabase  SQL > desc employees;
++-----------+-------------+------+-----+---------+-------+
+| Field     | Type        | Null | Key | Default | Extra |
++-----------+-------------+------+-----+---------+-------+
+| EmpID     | int         | NO   | PRI | NULL    |       |
+| EmpName   | varchar(50) | NO   |     | NULL    |       |
+| DeptID    | int         | YES  |     | NULL    |       |
+| Salary    | int         | YES  |     | NULL    |       |
+| ManagerID | int         | YES  |     | NULL    |       |
++-----------+-------------+------+-----+---------+-------+
+5 rows in set (0.0048 sec)
+
+   MySQL  localhost:33060+ ssl  mydatabase  SQL > INSERT INTO Employees (EmpID, EmpName, DeptID, Salary)
+                                             -> VALUES
+                                             -> (1, 'tayar', 441, 50000),
+                                             -> (2, 'amanu', 442, 65000),
+                                             -> (3, 'hasanu', 443, 55000),
+                                             -> (4, 'sabdhar', 444, 70000),
+                                             -> (5, 'shazar', NULL, 45000),
+                                             -> (6, 'bagar', 445, 60000);
+Query OK, 6 rows affected (0.0050 sec)
+
+Records: 6  Duplicates: 0  Warnings: 0
+
+ MySQL  localhost:33060+ ssl  mydatabase  SQL > SELECT * FROM Employees;
++-------+---------+--------+--------+-----------+
+| EmpID | EmpName | DeptID | Salary | ManagerID |
++-------+---------+--------+--------+-----------+
+|     1 | tayar   |    441 |  50000 |      NULL |
+|     2 | amanu   |    442 |  65000 |      NULL |
+|     3 | hasanu  |    443 |  55000 |      NULL |
+|     4 | sabdhar |    444 |  70000 |      NULL |
+|     5 | shazar  |   NULL |  45000 |      NULL |
+|     6 | bagar   |    445 |  60000 |      NULL |
++-------+---------+--------+--------+-----------+
+6 rows in set (0.0010 sec)
+
+ MySQL  localhost:33060+ ssl  mydatabase  SQL > CREATE TABLE Departments (
+                                             ->     DeptID INT PRIMARY KEY,
+                                             ->     DeptName VARCHAR(50) NOT NULL
+                                             -> );
+
+ MySQL  localhost:33060+ ssl  mydatabase  SQL > desc departments;
++----------+-------------+------+-----+---------+-------+
+| Field    | Type        | Null | Key | Default | Extra |
++----------+-------------+------+-----+---------+-------+
+| DeptID   | int         | NO   | PRI | NULL    |       |
+| DeptName | varchar(50) | NO   |     | NULL    |       |
++----------+-------------+------+-----+---------+-------+
+2 rows in set (0.0026 sec)
+ MySQL  localhost:33060+ ssl  mydatabase  SQL > INSERT INTO Departments (DeptID, DeptName)
+                                             -> VALUES
+                                             -> (441, 'HR'),
+                                             -> (442, 'MARKETING'),
+                                             -> (443, 'DEVELOPING'),
+                                             -> (445, 'SALES');
+ERROR: 1062: Duplicate entry '441' for key 'departments.PRIMARY'
+ MySQL  localhost:33060+ ssl  mydatabase  SQL > delete from departments;
+Query OK, 4 rows affected (0.0053 sec)
+ MySQL  localhost:33060+ ssl  mydatabase  SQL > INSERT INTO Departments (DeptID, DeptName)
+                                             -> VALUES
+                                             -> (441, 'HR'),
+                                             -> (442, 'MARKETING'),
+                                             -> (443, 'DEVELOPING'),
+                                             -> (445, 'SALES');
+Query OK, 4 rows affected (0.0053 sec)
+
+Records: 4  Duplicates: 0  Warnings: 0
+
+ MySQL  localhost:33060+ ssl  mydatabase  SQL > SELECT* FROM Departments;
++--------+------------+
+| DeptID | DeptName   |
++--------+------------+
+|    441 | HR         |
+|    442 | MARKETING  |
+|    443 | DEVELOPING |
+|    445 | SALES      |
++--------+------------+
+4 rows in set (0.0009 sec)
+
+ MySQL  localhost:33060+ ssl  mydatabase  SQL > SELECT e.EmpName,
+                                             ->        d.DeptName,
+                                             ->        e.Salary
+                                             -> FROM Employees e
+                                             -> INNER JOIN Departments d
+                                             -> ON e.DeptID = d.DeptID;
++---------+------------+--------+
+| EmpName | DeptName   | Salary |
++---------+------------+--------+
+| tayar   | HR         |  50000 |
+| amanu   | MARKETING  |  65000 |
+| hasanu  | DEVELOPING |  55000 |
+| bagar   | SALES      |  60000 |
++---------+------------+--------+
+4 rows in set (0.0013 sec)
+
+ MySQL  localhost:33060+ ssl  mydatabase  SQL > SELECT e.EmpName,
+                                             ->        d.DeptName,
+                                             ->        e.Salary
+                                             -> FROM Employees e
+                                             -> LEFT JOIN Departments d
+                                             -> ON e.DeptID = d.DeptID;
++---------+------------+--------+
+| EmpName | DeptName   | Salary |
++---------+------------+--------+
+| tayar   | HR         |  50000 |
+| amanu   | MARKETING  |  65000 |
+| hasanu  | DEVELOPING |  55000 |
+| sabdhar | NULL       |  70000 |
+| shazar  | NULL       |  45000 |
+| bagar   | SALES      |  60000 |
++---------+------------+--------+
+6 rows in set (0.0007 sec)
+
+ MySQL  localhost:33060+ ssl  mydatabase  SQL > SELECT e.EmpName,
+                                             ->        d.DeptName,
+                                             ->        e.Salary
+                                             -> FROM Employees e
+                                             -> RIGHT JOIN Departments d
+                                             -> ON e.DeptID = d.DeptID;
++---------+------------+--------+
+| EmpName | DeptName   | Salary |
++---------+------------+--------+
+| tayar   | HR         |  50000 |
+| amanu   | MARKETING  |  65000 |
+| hasanu  | DEVELOPING |  55000 |
+| bagar   | SALES      |  60000 |
++---------+------------+--------+
+4 rows in set (0.0008 sec)
+
+ MySQL  localhost:33060+ ssl  mydatabase  SQL > SELECT e.EmpName,
+                                             ->        d.DeptName,
+                                             ->        e.Salary
+                                             -> FROM Employees e
+                                             -> LEFT JOIN Departments d
+                                             -> ON e.DeptID = d.DeptID
+                                             -> UNION
+                                             -> SELECT e.EmpName,
+                                             ->        d.DeptName,
+                                             ->        e.Salary
+                                             -> FROM Employees e
+                                             -> RIGHT JOIN Departments d
+                                             -> ON e.DeptID = d.DeptID;
++---------+------------+--------+
+| EmpName | DeptName   | Salary |
++---------+------------+--------+
+| tayar   | HR         |  50000 |
+| amanu   | MARKETING  |  65000 |
+| hasanu  | DEVELOPING |  55000 |
+| sabdhar | NULL       |  70000 |
+| shazar  | NULL       |  45000 |
+| bagar   | SALES      |  60000 |
++---------+------------+--------+
+6 rows in set (0.0015 sec)
+
+ MySQL  localhost:33060+ ssl  mydatabase  SQL > SELECT e.*
+                                             -> FROM Employees e
+                                             -> LEFT JOIN Departments d
+                                             -> ON e.DeptID = d.DeptID
+                                             -> WHERE d.DeptID IS NULL;
++-------+---------+--------+--------+-----------+
+| EmpID | EmpName | DeptID | Salary | ManagerID |
++-------+---------+--------+--------+-----------+
+|     4 | sabdhar |    444 |  70000 |      NULL |
+|     5 | shazar  |   NULL |  45000 |      NULL |
++-------+---------+--------+--------+-----------+
+2 rows in set (0.0007 sec)
+
+ MySQL  localhost:33060+ ssl  mydatabase  SQL > SELECT d.*
+                                             -> FROM Departments d
+                                             -> LEFT JOIN Employees e
+                                             -> ON d.DeptID = e.DeptID
+                                             -> WHERE e.EmpID IS NULL;
+Empty set (0.0010 sec)
+
+
+ MySQL  localhost:33060+ ssl  mydatabase  SQL > SELECT e.EmpName,
+                                             ->        d.DeptName,
+                                             ->        e.Salary
+                                             -> FROM Employees e,
+                                             ->      Departments d
+                                             -> WHERE e.DeptID = d.DeptID;
++---------+------------+--------+
+| EmpName | DeptName   | Salary |
++---------+------------+--------+
+| tayar   | HR         |  50000 |
+| amanu   | MARKETING  |  65000 |
+| hasanu  | DEVELOPING |  55000 |
+| bagar   | SALES      |  60000 |
++---------+------------+--------+
+4 rows in set (0.0008 sec)
+
+
+ MySQL  localhost:33060+ ssl  mydatabase  SQL > SELECT e.EmpName,
+                                             ->        d.DeptName,
+                                             ->        e.Salary
+                                             -> FROM Departments d
+                                             -> RIGHT JOIN Employees e
+                                             -> ON d.DeptID = e.DeptID;
++---------+------------+--------+
+| EmpName | DeptName   | Salary |
++---------+------------+--------+
+| tayar   | HR         |  50000 |
+| amanu   | MARKETING  |  65000 |
+| hasanu  | DEVELOPING |  55000 |
+| sabdhar | NULL       |  70000 |
+| shazar  | NULL       |  45000 |
+| bagar   | SALES      |  60000 |
++---------+------------+--------+
+6 rows in set (0.0007 sec)
+
+ MySQL  localhost:33060+ ssl  mydatabase  SQL > SELECT e.EmpName,
+                                             ->        d.DeptName,
+                                             ->        e.Salary
+                                             -> FROM Departments d
+                                             -> LEFT JOIN Employees e
+                                             -> ON d.DeptID = e.DeptID;
++---------+------------+--------+
+| EmpName | DeptName   | Salary |
++---------+------------+--------+
+| tayar   | HR         |  50000 |
+| amanu   | MARKETING  |  65000 |
+| hasanu  | DEVELOPING |  55000 |
+| bagar   | SALES      |  60000 |
++---------+------------+--------+
+4 rows in set (0.0007 sec)
+
+ MySQL  localhost:33060+ ssl  mydatabase  SQL > SELECT e.EmpName,
+                                             ->        d.DeptName
+                                             -> FROM Employees e
+                                             -> CROSS JOIN Departments d;
++---------+------------+
+| EmpName | DeptName   |
++---------+------------+
+| tayar   | SALES      |
+| tayar   | DEVELOPING |
+| tayar   | MARKETING  |
+| tayar   | HR         |
+| amanu   | SALES      |
+| amanu   | DEVELOPING |
+| amanu   | MARKETING  |
+| amanu   | HR         |
+| hasanu  | SALES      |
+| hasanu  | DEVELOPING |
+| hasanu  | MARKETING  |
+| hasanu  | HR         |
+| sabdhar | SALES      |
+| sabdhar | DEVELOPING |
+| sabdhar | MARKETING  |
+| sabdhar | HR         |
+| shazar  | SALES      |
+| shazar  | DEVELOPING |
+| shazar  | MARKETING  |
+| shazar  | HR         |
+| bagar   | SALES      |
+| bagar   | DEVELOPING |
+| bagar   | MARKETING  |
+| bagar   | HR         |
++---------+------------+
+24 rows in set (0.0008 sec)
+
+
+ MySQL  localhost:33060+ ssl  mydatabase  SQL > ALTER TABLE Employees
+                                             -> ADD ManagerID INT;
+ERROR: 1060: Duplicate column name 'ManagerID'
+ MySQL  localhost:33060+ ssl  mydatabase  SQL > UPDATE Employees
+                                             -> SET ManagerID = NULL
+                                             -> WHERE EmpID = 1;
+Query OK, 1 row affected (0.0008 sec)
+
+Rows matched: 1  Changed: 0  Warnings: 0
+
+
+ MySQL  localhost:33060+ ssl  mydatabase  SQL > UPDATE Employees
+                                             -> SET ManagerID = 1
+                                             -> WHERE EmpID = 2;
+Query OK, 1 row affected (0.0052 sec)
+
+Rows matched: 1  Changed: 1  Warnings: 0
+ MySQL  localhost:33060+ ssl  mydatabase  SQL > UPDATE Employees
+                                             -> SET ManagerID = 3
+                                             -> WHERE EmpID = 4;
+Query OK, 1 row affected (0.0038 sec)
+
+Rows matched: 1  Changed: 1  Warnings: 0
+
+
+ MySQL  localhost:33060+ ssl  mydatabase  SQL > UPDATE Employees
+                                             -> SET ManagerID = 4
+                                             -> WHERE EmpID = 1;
+Query OK, 1 row affected (0.0044 sec)
+
+Rows matched: 1  Changed: 1  Warnings: 0
+ MySQL  localhost:33060+ ssl  mydatabase  SQL > UPDATE Employees
+                                             -> SET ManagerID = 3
+                                             -> WHERE EmpID = 2;
+Query OK, 1 row affected (0.0030 sec)
+
+Rows matched: 1  Changed: 1  Warnings: 0
+
+
+ MySQL  localhost:33060+ ssl  mydatabase  SQL > UPDATE Employees
+                                             -> SET ManagerID = 6
+                                             -> WHERE EmpID = 3;
+Query OK, 1 row affected (0.0048 sec)
+
+Rows matched: 1  Changed: 1  Warnings: 0
+
+
+ MySQL  localhost:33060+ ssl  mydatabase  SQL > SELECT
+                                             -> e.EmpName AS Employee,
+                                             -> m.EmpName AS Manager
+                                             -> FROM Employees e
+                                             -> LEFT JOIN Employees m
+                                             -> ON e.ManagerID = m.EmpID;
++----------+---------+
+| Employee | Manager |
++----------+---------+
+| tayar    | sabdhar |
+| amanu    | hasanu  |
+| hasanu   | bagar   |
+| sabdhar  | hasanu  |
+| shazar   | NULL    |
+| bagar    | NULL    |
++----------+---------+
+6 rows in set (0.0009 sec)
+ MySQL  localhost:33060+ ssl  mydatabase  SQL >
